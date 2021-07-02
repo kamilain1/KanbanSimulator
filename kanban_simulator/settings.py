@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'kanban_simulator.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd9dqivopd0v4p8',
+        'USER': 'kugtithtyfoozk',
+        'PASSWORD': '89f56a620eef3d6cd4e134e8ea5cfe4614219e92c560d10c8726a5e46b952038',
+        'HOST': 'ec2-34-247-151-118.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
