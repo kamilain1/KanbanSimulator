@@ -6,8 +6,6 @@ function player_template(player, count){
     return '<tr>' +
                     '<th scope="row">' + count +'</th>' +
                     '<td>' + player["name"] + '</td>' +
-                    '<td>' + player["team_number"] + '</td>' +
-                    '<td>' + isSpectator(player) + '</td>' +
                     '</tr>';
 }
 
