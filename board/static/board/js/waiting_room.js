@@ -9,12 +9,6 @@ function player_template(player, count){
                     '</tr>';
 }
 
-function isSpectator(player){
-    if (player["spectator"])
-        return "Да";
-    return "Нет";
-}
-
 function new_players_check(){
     $.ajax({
         type: "POST",
