@@ -1,6 +1,8 @@
 var current_version = 0;
 var team_id = 1;
 var current_day = 1;
+var player_collaboration_day = 5;
+var limits = [4, 4, 4];
 
 function backLogInitialPopulation(){
     $.ajax({
@@ -11,11 +13,19 @@ function backLogInitialPopulation(){
         success: function (response){
             var cards = JSON.parse(response["cards"]);
             current_effort = JSON.parse(response["team_effort"]);
+
+            var board_info = JSON.parse(response["board_info"]);
+            current_day = board_info["Age"];
+            limits[0] = board_info["Wip1"];
+            limits[1] = board_info["Wip2"];
+            limits[2] = board_info["Wip3"];
+
             for (var i = 0; i < cards.length; i++){
                 var card_element = createCardTemplate(cards[i]);
                 document.getElementById("backlog_container").innerHTML += card_element;
                 cards[i]['row_number'] = i;
                 cards[i]['column_number'] = 0;
+                cards[i]['business_value'] = 10;
                 card_list.push(cards[i]);
             }
 
@@ -106,6 +116,15 @@ function start_new_day(){
         for (var k = 0; k < card_list.length; k ++){
             if (card_list[k]["column_number"] != last_column && card_list[k]["column_number"] != 0){
                 card_list[k]["age"] += 1;
+
+            /*    if (card_list[k]["age"] == 8){
+                card_list[k]["business_value"] *= 0.5;
+            }else if (card_list[k]["age"] == 9){
+                card_list[k]["business_value"] *= 0.25;
+            }else if (card_list[k]["age"] > 9){
+                card_list[k]["business_value"] = 0;
+            }*/
+
             }
         }
 

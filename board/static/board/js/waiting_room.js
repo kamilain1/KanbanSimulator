@@ -1,6 +1,7 @@
 var number_of_players = 0;
 var game_id = 0;
 var current_version = -1;
+var player_id = -1;
 
 function player_template(player, count){
     return '<tr>' +
