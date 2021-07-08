@@ -346,7 +346,7 @@ def start_game(request, player_id):
             else:
                 analytic_remaining = random.randint(0, card.analytic_points - 1)
                 develop_remaining = card.develop_points
-                test_remaining = catd.test_points
+                test_remaining = card.test_points
 
             new_card = Card(title=card.title, team=team, start_day=start_day, analytic_remaining=analytic_remaining,
                             develop_remaining=develop_remaining, test_remaining=test_remaining,
