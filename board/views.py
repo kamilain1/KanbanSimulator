@@ -9,7 +9,7 @@ from .forms import CreateRoomForm, JoinRoomForm, PlayerFormSet
 import random
 
 NUMBER_OF_CHARACTERS = 7
-CARDS_IN_GAME = 30
+CARDS_IN_GAME = 10
 
 
 def index(request):
@@ -28,7 +28,6 @@ def index(request):
             # creating teams
             for i in range(teams_num):
                 new_team = Team(name='Команда ' + str(i), game=new_room, dayNum=5)
-
                 new_team.save()
 
             # creating player
@@ -71,7 +70,7 @@ def populateBackLog(request):
         request_team = request.POST.get('team', 0)
 
         # testing purposes
-        initial_conditions(request_team)
+        # initial_conditions(request_team)
 
         cards = Card.objects.filter(team=request_team).values('pk', 'title', 'age', 'is_expedite', 'ready_day',
                                                               'analytic_remaining', 'analytic_completed',
@@ -82,11 +81,11 @@ def populateBackLog(request):
         team = Team.objects.get(pk=request_team)
 
         # Team start day and wip limits (don't forget to change it later)
-        team.dayNum = 1
-        team.wip_limit1 = 4
-        team.wip_limit2 = 4
-        team.wip_limit3 = 4
-        team.save()
+        # team.dayNum = 1
+        # team.wip_limit1 = 4
+        # team.wip_limit2 = 4
+        # team.wip_limit3 = 4
+        # team.save()
 
         board_info = {"Age": team.dayNum,
                       "Wip1": team.wip_limit1,
@@ -332,26 +331,27 @@ def start_game(request, player_id):
         for i in range(len(cards_set)):
             card = cards_set[i]
             if i > 5:
-                analytic_remaining = card.analytic_points
-                develop_remaining = card.develop_points
-                test_remaining = card.test_points
+                analytic_completed = 0
+                develop_completed = 0
+                test_completed = 0
             elif i > 3:
-                analytic_remaining = 0
-                develop_remaining = 0
-                test_remaining = random.randint(0, card.test_points - 1)
+                analytic_completed = card.analytic_points
+                develop_completed = card.develop_points
+                test_completed = random.randint(0, card.test_points - 1)
             elif i > 1:
-                analytic_remaining = 0
-                develop_remaining = random.randint(0, card.develop_points - 1)
-                test_remaining = card.test_points
+                analytic_completed = card.analytic_points
+                develop_completed = random.randint(0, card.develop_points - 1)
+                test_completed = 0
             else:
-                analytic_remaining = random.randint(0, card.analytic_points - 1)
-                develop_remaining = card.develop_points
-                test_remaining = card.test_points
+                analytic_completed = random.randint(0, card.analytic_points - 1)
+                develop_completed = 0
+                test_completed = 0
 
-            new_card = Card(title=card.title, team=team, start_day=start_day, analytic_remaining=analytic_remaining,
-                            develop_remaining=develop_remaining, test_remaining=test_remaining,
-                            column_number=0 if i > 5 else i // 2 * 2 + 1, row_number=row if i > 5 else i % 2,
-                            business_value=card.business_value)
+            new_card = Card(title=card.title, team=team, start_day=start_day, analytic_remaining=card.analytic_points,
+                            analytic_completed=analytic_completed, develop_remaining=card.develop_points,
+                            develop_completed=develop_completed, test_remaining=card.test_points,
+                            test_completed=test_completed, column_number=0 if i > 5 else i // 2 * 2 + 1,
+                            row_number=row if i > 5 else i % 2, business_value=card.business_value)
             new_card.save()
             if i > 5:
                 row = row + 1
@@ -385,3 +385,22 @@ def rules(request):
 # to be added
 def news(request):
     return
+
+# @csrf_exempt
+# def delete_player(request, player_id):
+#     if request.method == "POST":
+#         #player = request.POST.get("player", None)
+#         print(player_id)
+#         player = Player.objects.get(pk=int(player_id))
+#         player.delete()
+#         game = player.team.game
+#         game.version += 1
+#             #
+#             #
+#             # Player.objects.get(pk=player_id).delete()
+#             # game_id = player.team.game.pk
+#             # game = Room.objects.get(pk=game_id)
+#             # game.version += 1
+#             # game.save()
+#
+#     return JsonResponse({}, status=200)
