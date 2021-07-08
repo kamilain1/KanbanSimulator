@@ -9,7 +9,7 @@ from .forms import CreateRoomForm, JoinRoomForm, PlayerFormSet
 import random
 
 NUMBER_OF_CHARACTERS = 7
-CARDS_IN_GAME = 10
+CARDS_IN_GAME = 30
 
 
 def index(request):
@@ -27,7 +27,7 @@ def index(request):
 
             # creating teams
             for i in range(teams_num):
-                new_team = Team(name='Команда '+str(i), game=new_room)
+                new_team = Team(name='Команда ' + str(i), game=new_room, dayNum=5)
                 new_team.save()
 
             # creating player
@@ -298,20 +298,55 @@ def start_game(request, player_id):
             chosen_indexes.add(j)
             number_found = True
 
+    # start day
+    start_day = 1
     for team in team_set:
         # creating cards for each team
         row = 0
-        for card in cards_set:
-            new_card = Card(title=card.title, team=team, analytic_remaining=card.analytic_points,
-                            develop_remaining=card.develop_points, test_remaining=card.test_points, row_number=row,
+
+        # if i = 0 or 1
+        # card is in analytic column
+        # if i = 2 or 3
+        # card is in develop column
+        # if i = 4 or 5
+        # card is in test column
+        for i in range(len(cards_set)):
+            card = cards_set[i]
+            if i > 5:
+                analytic_remaining = card.analytic_points
+                develop_remaining = card.develop_points
+                test_remaining = card.test_points
+            elif i > 3:
+                analytic_remaining = 0
+                develop_remaining = 0
+                test_remaining = random.randint(0, card.test_points - 1)
+            elif i > 1:
+                analytic_remaining = 0
+                develop_remaining = random.randint(0, card.develop_points - 1)
+                test_remaining = card.test_points
+            else:
+                analytic_remaining = random.randint(0, card.analytic_points - 1)
+                develop_remaining = card.develop_points
+                test_remaining = catd.test_points
+
+            new_card = Card(title=card.title, team=team, start_day=start_day, analytic_remaining=analytic_remaining,
+                            develop_remaining=develop_remaining, test_remaining=test_remaining,
+                            column_number=0 if i > 5 else i // 2 * 2 + 1, row_number=row if i > 5 else i % 2,
                             business_value=card.business_value)
             new_card.save()
-            row = row + 1
+            if i > 5:
+                row = row + 1
 
         # creating characters for each team
         for i in range(7):
             character = Character(team=team, role=i)
             character.save()
+
+        # changing the start day
+        if start_day == 1:
+            start_day = 15
+        else:
+            start_day = 1
 
     room.ready = True
     room.save()
