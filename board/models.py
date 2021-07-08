@@ -42,7 +42,7 @@ class Day(models.Model):
 
 class Player(models.Model):
     # nickname
-    name = models.CharField(max_length=20, default='name')
+    name = models.CharField(max_length=20)
     # id of the correspondent team
     team = models.ForeignKey(Team, on_delete=models.CASCADE, verbose_name='Команда игрока')
     # is the player spectator
@@ -79,13 +79,13 @@ class UserStory(models.Model):
 
 
 class Card(models.Model):
-    # user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
-
     # Card title
-    title = models.CharField(max_length=20, null=True)
+    title = models.CharField(max_length=20)
 
     # id of the correspondent team
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    # day when cart is added to backlog
+    start_day = models.IntegerField()
     # age of the current card
     age = models.IntegerField(default=0)
     # Expedite factor
@@ -106,4 +106,4 @@ class Card(models.Model):
     column_number = models.IntegerField(default=0)
     row_number = models.IntegerField(default=0)
 
-    business_value = models.IntegerField(null=True)
+    business_value = models.IntegerField()
