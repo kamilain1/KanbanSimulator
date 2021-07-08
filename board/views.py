@@ -28,6 +28,7 @@ def index(request):
             # creating teams
             for i in range(teams_num):
                 new_team = Team(name='Команда ' + str(i), game=new_room, dayNum=5)
+
                 new_team.save()
 
             # creating player
@@ -70,7 +71,7 @@ def populateBackLog(request):
         request_team = request.POST.get('team', 0)
 
         # testing purposes
-        # initial_conditions(request_team)
+        initial_conditions(request_team)
 
         cards = Card.objects.filter(team=request_team).values('pk', 'title', 'age', 'is_expedite', 'ready_day',
                                                               'analytic_remaining', 'analytic_completed',
@@ -78,8 +79,23 @@ def populateBackLog(request):
                                                               'test_remaining', 'test_completed',
                                                               'column_number', 'row_number')
 
+        team = Team.objects.get(pk=request_team)
+
+        # Team start day and wip limits (don't forget to change it later)
+        team.dayNum = 1
+        team.wip_limit1 = 4
+        team.wip_limit2 = 4
+        team.wip_limit3 = 4
+        team.save()
+
+        board_info = {"Age": team.dayNum,
+                      "Wip1": team.wip_limit1,
+                      "Wip2": team.wip_limit2,
+                      "Wip3": team.wip_limit3}
+
         return JsonResponse(
-            {"cards": json.dumps(list(cards)), "team_effort": json.dumps(generate_random_effort_for_whole_team())},
+            {"cards": json.dumps(list(cards)), "board_info": json.dumps(board_info),
+             "team_effort": json.dumps(generate_random_effort_for_whole_team())},
             status=200)
 
     return JsonResponse({"error": ""}, status=400)
@@ -266,10 +282,13 @@ def waiting_room(request, player_id):
 
 def manage_players(request, player_id):
     if request.method == 'POST':
+        formset = PlayerFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
         return HttpResponseRedirect(reverse('board:startGame', args=(player_id,)))
     else:
         room = Player.objects.get(pk=player_id).team.game
-        players = Player.objects.filter(team_id__in=room.team_set.values('pk')).only('name', 'team', 'spectator')
+        players = Player.objects.filter(team_id__in=room.team_set.values('pk')).order_by('team_id')
         formset = PlayerFormSet(queryset=players)
         choices = room.team_set.all()
         return render(request, 'board/manage_players.html', {'formset': formset, 'choices': choices})

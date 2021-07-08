@@ -114,8 +114,8 @@
 
             <div class="col-5 d-flex align-items-center">
                 <div class="input-group">
-                    <input type="text" class="form-control" disabled placeholder="http://127.0.0.1:8000{% url 'board:join' player.team.game.pk %}" aria-label="Recipient's username" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-clipboard-text="http://127.0.0.1:8000{% url 'board:join' player.team.game.pk %}">Copy to clipboard</button>
+                    <input type="text" class="form-control" disabled placeholder="https://kanbansummer21.herokuapp.com{% url 'board:join' player.team.game.pk %}" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" data-clipboard-text="https://kanbansummer21.herokuapp.com{% url 'board:join' player.team.game.pk %}">Copy to clipboard</button>
                 </div>
             </div>
         </div>
@@ -126,75 +126,14 @@
 
     <div class="container overflow-auto">
         <table class="table table-hover">
-
             <thead class="table-success sticky-top">
                 <tr class="">
                     <th scope="col">#</th>
                     <th scope="col">Никнейм</th>
-                    <th scope="col">Номер комнаты</th>
-                    <th scope="col">Наблюдатель?</th>
                 </tr>
             </thead>
-
-            <tbody id="players_container">
-
-
-
-                    <!--<tr>
-                    <th scope="row">1</th>
-                    <td>Чел1</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Чел2</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">3</th>
-                    <td>Чел</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">4</th>
-                    <td>Челик</td>
-                    <td>что-то</td>
-                    </tr>
-
-
-                    <tr>
-                    <th scope="row">5</th>
-                    <td>Человечик</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">6</th>
-                    <td>Человечичка</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">7</th>
-                    <td>Миничелик</td>
-                    <td>что-то</td>
-                    </tr>
-
-                    <tr>
-                    <th scope="row">8</th>
-                    <td>Микрочелик</td>
-                    <td>что-то</td>
-                    </tr>-->
-
-
-
-            </tbody>
-
+            <tbody id="players_container"></tbody>
         </table>
-
     </div>
 
     <div class="container pb-4">

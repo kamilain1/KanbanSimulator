@@ -1,20 +1,13 @@
 var number_of_players = 0;
 var game_id = 0;
 var current_version = -1;
+var player_id = -1;
 
 function player_template(player, count){
     return '<tr>' +
                     '<th scope="row">' + count +'</th>' +
                     '<td>' + player["name"] + '</td>' +
-                    '<td>' + player["team_number"] + '</td>' +
-                    '<td>' + isSpectator(player) + '</td>' +
                     '</tr>';
-}
-
-function isSpectator(player){
-    if (player["spectator"])
-        return "Да";
-    return "Нет";
 }
 
 function new_players_check(){
