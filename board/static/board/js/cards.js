@@ -3,7 +3,11 @@ var card_list = [];
 
 // html template creation function
 function createCardTemplate(card_model){
-    return '<div class="card border-success mb-3 kanban_card draggable no_droppable_card" id="kb_card_' + card_model["pk"] + '">' +
+    var class_name = "no_droppable_card";
+    if (card_model["column_number"] == 1 || card_model["column_number"] == 3 || card_model["column_number"] == 5){
+        class_name = "droppable_card";
+    }
+    return '<div class="card border-success mb-3 kanban_card draggable ' + class_name + '" id="kb_card_' + card_model["pk"] + '">' +
                             '<h6 class="card-header border-success text-start">' + card_model["title"] + '</h6>' +
                             '<div class="card-body p-1 text-start">' +
 
@@ -38,7 +42,7 @@ function createCardTemplate(card_model){
 
                             '</div>' +
 
-                            '<div class="card-footer border-success text-end p-1 pe-2 fw-light fst-italic">День #' +card_model["age"] + '</div>' +
+                            '<div class="card-footer border-success d-flex flex-row p-1 pe-2 fw-light fst-italic"><div class="me-auto"><small>value: ' + card_model["business_value"] + '</small></div><div class="ms-auto"><small>День #' +card_model["age"] + '</small></div></div>' +
             '</div>';
 }
 
@@ -78,18 +82,25 @@ function createExpediteCardTemplate(card_model){
 
                             '</div>' +
 
-                            '<div class="card-footer bg-warning border-dark text-end p-1 pe-2 fw-light fst-italic">День #' + card_model["age"] + '</div>' +
-            '</div>';
+                            '<div class="card-footer bg-warning border-dark d-flex flex-row p-1 pe-2 fw-light fst-italic"><div class="me-auto"><small>value: ' + card_model["business_value"] + '</small></div><div class="ms-auto"><small>День #' +card_model["age"] + '</small></div></div>' +
+        '</div>';
 }
 
 // droppable behavior for sub_containers
 $(function() {
-    $('.droppable_anl_proc').droppable({
+    allowToDrop();
+});
+
+function allowToDrop(){
+
+$('.droppable_anl_proc').droppable({
         accept: function(draggable){
         if (draggable.hasClass("draggable")){
-            if (getNumberOfChildNodesById("analytic_in_process_container") < limits[0]){
+            console.log("it is draggable");
+            if (parseInt(getNumberOfChildNodesById("analytic_in_process_container")) + parseInt(getNumberOfChildNodesById("analytic_completed_container")) < limits[0]){
                 return true;
             }
+            console.log("bigger than");
             return false;
         }
         return false;
@@ -111,7 +122,7 @@ $(function() {
     $('.droppable_dev_proc').droppable({
         accept: function(draggable){
         if (draggable.hasClass("draggable_to_dev")){
-            if (getNumberOfChildNodesById("devop_in_process_container") < limits[1]){
+            if (getNumberOfChildNodesById("devop_in_process_container") + getNumberOfChildNodesById("devop_completed_container") < limits[1]){
                 return true;
             }
             return false;
@@ -135,7 +146,7 @@ $(function() {
     $('.droppable_test_in_proc ').droppable({
         accept: function(draggable){
         if (draggable.hasClass("draggable_to_test")){
-            if (getNumberOfChildNodesById("test_in_process_container") < limits[2]){
+            if (getNumberOfChildNodesById("test_in_process_container") + getNumberOfChildNodesById("test_completed_container") < limits[2]){
                 return true;
             }
             return false;
@@ -171,7 +182,8 @@ $(function() {
             moveCard(column_num, row_num, id);
         }
     });
-});
+
+}
 
 // function which calls after moving card to the given position (server interaction)
 function moveCard(column_number, row_number, id){
@@ -198,7 +210,11 @@ function moveCard(column_number, row_number, id){
 function abilityToAddCharacters(card){
     card.removeClass("no_droppable_card");
     card.addClass("droppable_card");
+    droppableAbility();
 
+}
+
+function droppableAbility(){
     $('.droppable_card').droppable({
         accept: function(draggable){
             if (draggable.hasClass("players")){
@@ -303,7 +319,7 @@ function getProportion(first, second){
 }
 
 function test(){
-
+    alert("dsa");
 }
 
 
