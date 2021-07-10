@@ -16,7 +16,7 @@ class Team(models.Model):
     # version of the board
     version = models.IntegerField(default=0)
     # current game day
-    dayNum = models.IntegerField(default=1)
+    dayNum = models.IntegerField()
 
     # WIP limits for Analytics, Devops, Testers respectively
     wip1 = models.IntegerField(name='wip_limit1', default=4)
@@ -24,7 +24,7 @@ class Team(models.Model):
     wip3 = models.IntegerField(name='wip_limit3', default=4)
 
     def __str__(self):
-        return self.name
+        return self.name + '. ID комнаты: ' + str(self.game.pk)
 
 
 # Primary usage - statistics (graph plotting)
@@ -39,6 +39,9 @@ class Day(models.Model):
     dev_completed_tasks = models.IntegerField()
     test_completed_tasks = models.IntegerField()
 
+    def __str__(self):
+        return 'ID: ' + str(self.pk) + '. ' + self.team.__str__()
+
 
 class Player(models.Model):
     # nickname
@@ -50,6 +53,9 @@ class Player(models.Model):
     # is the player creator of a room
     creator = models.BooleanField(default=False)
 
+    def __str__(self):
+        return 'Никнейм: ' + self.name + '. ' + self.team.__str__()
+
 
 class Character(models.Model):
     # Correspondent team
@@ -58,7 +64,7 @@ class Character(models.Model):
     # (0...1) analytics
     # (2...4) developers
     # (5..6) testers
-    role = models.IntegerField(default=0)
+    role = models.IntegerField()
     # if it's -1 then character locates at common character position
     # otherwise it locates above the correspondent card
     card_id = models.IntegerField(default=-1)
@@ -77,6 +83,12 @@ class UserStory(models.Model):
 
     business_value = models.IntegerField()
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = 'User Stories'
+
 
 class Card(models.Model):
     # Card title
@@ -87,7 +99,7 @@ class Card(models.Model):
     # day when cart is added to backlog
     start_day = models.IntegerField()
     # age of the current card
-    age = models.IntegerField(default=0)
+    age = models.IntegerField()
     # Expedite factor
     is_expedite = models.BooleanField(default=False)
     # Day when card was completed (used for statistics, particularly for Lead Time Distribution Chart)
@@ -104,9 +116,9 @@ class Card(models.Model):
     test_completed = models.IntegerField(default=0)
 
     column_number = models.IntegerField(default=0)
-    row_number = models.IntegerField(default=0)
+    row_number = models.IntegerField()
 
     business_value = models.IntegerField()
 
     def __str__(self):
-        return self.title
+        return self.title + '. ' + self.team.__str__()
