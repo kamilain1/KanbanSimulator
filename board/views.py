@@ -56,18 +56,23 @@ def board(request, player_id):
             wip3 = form.cleaned_data['wip_limit3']
             player = Player.objects.get(pk=player_id)
             team = player.team
-            team.wip1 = wip1
-            team.wip2 = wip2
-            team.wip3 = wip3
+            team.wip_limit1 = wip1
+            team.wip_limit2 = wip2
+            team.wip_limit3 = wip3
             team.version += 1
             team.save()
 
-            new_form = ChangeWIPLimitsForm()
-            return render(request, 'board/board.html', {'player': player, 'form': new_form})
+            return HttpResponseRedirect(reverse('board:board', args=(player_id,)))
     else:
         form = ChangeWIPLimitsForm()
         player = Player.objects.get(pk=player_id)
-        return render(request, 'board/board.html', {'player': player, 'form': form})
+        cards = player.team.card_set
+        limits = [len(cards.filter(column_number=1)), len(cards.filter(column_number=3)),
+                  len(cards.filter(column_number=5))]
+        team = player.team
+        current = [team.wip_limit1, team.wip_limit2, team.wip_limit3]
+        return render(request, 'board/board.html',
+                      {'player': player, 'form': form, 'limits': limits, 'current': current})
 
 
 # temporary function for testing (board clearing and etc.)

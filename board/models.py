@@ -17,7 +17,7 @@ class Team(models.Model):
     # version of the board
     version = models.IntegerField(default=0)
     # current game day
-    dayNum = models.IntegerField()
+    dayNum = models.IntegerField(default=1)
 
     # WIP limits for Analytics, Devops, Testers respectively
     wip1 = models.IntegerField(name='wip_limit1', default=4)
@@ -46,7 +46,7 @@ class Day(models.Model):
 
 class Player(models.Model):
     # nickname
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, default='name')
     # id of the correspondent team
     team = models.ForeignKey(Team, on_delete=models.CASCADE, verbose_name='Команда игрока')
     # is the player spectator
@@ -55,7 +55,7 @@ class Player(models.Model):
     creator = models.BooleanField(default=False)
 
     def __str__(self):
-        return 'Никнейм: ' + self.name + '. ' + self.team.__str__()
+        return 'Никнейм: ' + self.name + '. ID: ' + str(self.pk) + '. ' + self.team.__str__()
 
 
 class Character(models.Model):
@@ -65,7 +65,7 @@ class Character(models.Model):
     # (0...1) analytics
     # (2...4) developers
     # (5..6) testers
-    role = models.IntegerField()
+    role = models.IntegerField(default=0)
     # if it's -1 then character locates at common character position
     # otherwise it locates above the correspondent card
     card_id = models.IntegerField(default=-1)
@@ -93,14 +93,14 @@ class UserStory(models.Model):
 
 class Card(models.Model):
     # Card title
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=20, null=True)
 
     # id of the correspondent team
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     # day when cart is added to backlog
-    start_day = models.IntegerField()
+    start_day = models.IntegerField(null=True)
     # age of the current card
-    age = models.IntegerField()
+    age = models.IntegerField(default=0)
     # Expedite factor
     is_expedite = models.BooleanField(default=False)
     # Day when card was completed (used for statistics, particularly for Lead Time Distribution Chart)
@@ -117,9 +117,9 @@ class Card(models.Model):
     test_completed = models.IntegerField(default=0)
 
     column_number = models.IntegerField(default=0)
-    row_number = models.IntegerField()
+    row_number = models.IntegerField(default=0)
 
-    business_value = models.IntegerField()
+    business_value = models.IntegerField(null=True)
 
     def __str__(self):
         return self.title + '. ' + self.team.__str__()
