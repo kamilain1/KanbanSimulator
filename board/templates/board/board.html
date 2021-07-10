@@ -49,7 +49,7 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#StatisticsModal" id="stat_show">Статистика</button>
 
                 {% endif %}
-                <button class="btn btn-outline-light" data-clipboard-text="http://127.0.0.1:8000{% url 'board:joinGame' player.pk %}">Скопировать ссылку</button>
+                <button class="btn btn-outline-light" data-clipboard-text="https://kanbansummer21.herokuapp.com/{% url 'board:joinGame' player.pk %}">Скопировать ссылку</button>
 
                 <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#RulesModal">Правила игры</button>
             </div>
