@@ -1,11 +1,14 @@
 var current_version = 0;
 var team_id = 1;
+var player_id = 0;
 var current_day = 1;
 var player_collaboration_day = 10;
 var limits = [4, 4, 4];
 var BV = 0;
+// initial data for graph plotting
 var bar_data = [{"1": 0}, {"2": 0}, {"3": 0}, {"4": 0}];
 var line_data = [{"1": [1, 0, 0]}, {"2": [2, 1, 0]}, {"3": [3, 1, 0]}, {"4": [4, 2, 0]}];
+
 var lineChart;
 var barChart;
 
@@ -15,11 +18,40 @@ var FIRST_EXPEDITE = 8;
 var SECOND_EXPEDITE = 13;
 var THIRD_EXPEDITE = 16;
 
+var LATE_CARD_DAY = 10;
+var LATE_EXPEDITE_CARD_DAY = 6;
+var LATE_CARD_INIT_BV = -5;
+var LATE_EXPEDITE_CARD_INIT_BV = -8;
+var LATE_CARD_FACTOR = 1.5;
+var LATE_EXPEDITE_CARD_FACTOR = 2;
 // arrays of days
 var analytic_completed_tasks = [];
 var developer_completed_tasks = [];
 var test_completed_tasks = [];
 
+var is_backlog_function_processed = false;
+
+var last_day = 26;
+
+// needed for showing that players have only 1 week left
+var last_week_reminder = false;
+
+// needed for showing that players have only 1 day left
+var last_day_reminder = false;
+
+// needed for showing that first expedite modal was shown
+var first_expedite_modal_was_shown = false;
+
+// needed for showing that second expedite modal was shown
+var second_expedite_modal_was_shown = false;
+
+// needed for showing that third expedite modal was shown
+var third_expedite_modal_was_shown = false;
+
+// needed for showing that second half of cards modal was shown
+var second_half_model_shown = false;
+
+// function which is responsible for initial card states(position, progress and etc)
 function backLogInitialPopulation(){
     $.ajax({
         type: 'POST',
@@ -80,12 +112,13 @@ function backLogInitialPopulation(){
 
             droppableAbility();
             allowToDrop();
+            is_backlog_function_processed = true;
     }});
     performVersionCheck();
 }
 
 
-// in process...
+// function which calls every start day button click (here we calculate the progress, business value, next positions of the cards and etc)
 function start_new_day(){
 
     if (window.confirm("Do you really want to start new day?")) {
@@ -160,33 +193,45 @@ function start_new_day(){
                 }
             }
         }
+        calculateBV();
 
         var last_column = 7;
+        //var sum = 0;
         for (var k = 0; k < card_list.length; k ++){
             if (card_list[k]["column_number"] != last_column && card_list[k]["column_number"] != 0){
                 card_list[k]["age"] += 1;
-            if (card_list[k]["is_expedite"]){
-                if (card_list[k]["age"] == 5){
-                    card_list[k]["business_value"] = 0;
-                }else if (card_list[k]["age"] == 6 ){
-                    card_list[k]["business_value"] = -8;
-                }else if (card_list[k]["age"] > 6){
-                    card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * 2);
-                }
-            }else{
-                if (card_list[k]["age"] == 8 || card_list[k]["age"] == 9){
-                    card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * 0.5);
-                }else if (card_list[k]["age"] == 10){
-                    card_list[k]["business_value"] = 0;
-                }else if (card_list[k]["age"] == 11){
-                    card_list[k]["business_value"] = -5;
-                }else if (card_list[k]["age"] > 11){
-                    card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * 1.5);
-                }
+                if (card_list[k]["is_expedite"]){
+                    if (card_list[k]["age"] == LATE_EXPEDITE_CARD_DAY){
+                        card_list[k]["business_value"] = 0;
+                    }else if (card_list[k]["age"] == LATE_EXPEDITE_CARD_DAY + 1 ){
+                        card_list[k]["business_value"] = LATE_EXPEDITE_CARD_INIT_BV;
+                    }else if (card_list[k]["age"] > LATE_EXPEDITE_CARD_DAY + 1){
+                        card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * LATE_EXPEDITE_CARD_FACTOR);
+                    }
+                }else{
+                    if (card_list[k]["age"] == LATE_CARD_DAY - 2 || card_list[k]["age"] == LATE_CARD_DAY - 1){
+                        card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * 0.5);
+                    }else if (card_list[k]["age"] == LATE_CARD_DAY){
+                        card_list[k]["business_value"] = 0;
+                    }else if (card_list[k]["age"] == LATE_CARD_DAY + 1){
+                        card_list[k]["business_value"] = LATE_CARD_INIT_BV;
+                    }else if (card_list[k]["age"] > LATE_CARD_DAY + 1){
+                        card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * LATE_CARD_FACTOR);
+                    }
 
-            }
+                }
+            }else if (card_list[k]["is_expedite"] && card_list[k]["column_number"] != last_column){
+                card_list[k]["age"] += 1;
+                if (card_list[k]["age"] == LATE_EXPEDITE_CARD_DAY){
+                    card_list[k]["business_value"] = 0;
+                }else if (card_list[k]["age"] == LATE_EXPEDITE_CARD_DAY + 1){
+                    card_list[k]["business_value"] = LATE_EXPEDITE_CARD_INIT_BV;
+                }else if (card_list[k]["age"] > LATE_EXPEDITE_CARD_DAY + 1){
+                    card_list[k]["business_value"] = Math.round(card_list[k]["business_value"] * LATE_EXPEDITE_CARD_FACTOR);
+                }
             }
         }
+        //BV = sum;
 
         var anl_in_proc = card_list.filter(x => x["column_number"] == 1).sort(compare_cards);
         var dev_in_proc = card_list.filter(x => x["column_number"] == 3).sort(compare_cards);
@@ -242,6 +287,7 @@ function start_new_day(){
         data["test_completed"] = test_comp;
         data["cards"] = JSON.stringify(card_list);
         data["characters"] = players_list;
+        data["BV"] = BV;
 
         $.ajax({
             type: "POST",
@@ -274,17 +320,20 @@ $(function() {
 
     $('#day_num_title').text("День #" + current_day);
 
+    // statistics button (business value calculating and graph plotting)
     $(document).on("click", "#stat_show", function () {
-     cumulativeGraph();
-     barGraph();
-     calculateBV();
-     $('#StatisticsModal').modal('toggle');
+        cumulativeGraph();
+        barGraph();
+        calculateBV();
+        document.getElementById('bv_sum_container').innerHTML = "БИЗНЕС ВАЛЬЮ: " + BV;
+        $('#StatisticsModal').modal('toggle');
     });
 });
 
 // function for inter-player synchronization
 function performVersionCheck(){
-    $.ajax({
+    if (is_backlog_function_processed){
+        $.ajax({
         type: "POST",
         url: "version_check",
         data: {'team_id': team_id,
@@ -308,15 +357,31 @@ function performVersionCheck(){
                 current_version = board_info["version"];
                 if (current_day != board_info["Age"]){
                     current_day = board_info["Age"];
-                    if (current_day == FIRST_EXPEDITE || current_day == SECOND_EXPEDITE || current_day == THIRD_EXPEDITE){
+                    if (current_day == FIRST_EXPEDITE && !first_expedite_modal_was_shown){
                         showExpediteModal();
-                     }else if (current_day == SECOND_HALF_APPEARS){
+                        first_expedite_modal_was_shown = true;
+                     }else if (current_day == SECOND_EXPEDITE && !second_expedite_modal_was_shown){
+                        showExpediteModal();
+                        second_expedite_modal_was_shown = true;
+                     }else if (current_day == THIRD_EXPEDITE && !third_expedite_modal_was_shown){
+                        showExpediteModal();
+                        third_expedite_modal_was_shown = true;
+                     }else if (current_day == SECOND_HALF_APPEARS && !second_half_model_shown){
                         showNewCardsModal();
+                        second_half_model_shown = true;
                     }
                 }
 
                 $('#day_num_title').text("День #" + current_day);
-
+                if (current_day == last_day - 1 && !last_day_reminder){
+                    last_day_reminder = true;
+                    document.getElementById("end_game_label").innerHTML = "Игра заканчивается завтра! Поторопитесь!";
+                    $("#AlertWeekEndGameModal").modal('toggle');
+                }else if (current_day == last_day - 7 && !last_week_reminder){
+                    last_week_reminder = true;
+                    document.getElementById("end_game_label").innerHTML = "Игра заканчивается через 7 дней! Поторопитесь!";
+                    $("#AlertWeekEndGameModal").modal('toggle');
+                }
 
                 removeAllChildNodes('backlog_container');
                 removeAllChildNodes('analytic_in_process_container');
@@ -369,7 +434,27 @@ function performVersionCheck(){
                 updateCharacterConfiguration();
                 document.body.classList.remove('waiting');
             }
-            setTimeout(performVersionCheck, 1000);
+            if (current_day == last_day){
+                $('#AlertEndGameModal').modal('toggle');
+                setTimeout(goToFinishRoom, 3000);
+            }else{
+                setTimeout(performVersionCheck, 1000);
+            }
+        }
+    });
+    }else{
+        setTimeout(performVersionCheck, 1000);
+    }
+
+}
+
+// function which redirects all player inside same team to finish(statistic) room
+function goToFinishRoom(){
+    $.ajax({
+        type: "GET",
+        url: "/"+ player_id + "/finish",
+        success: function(response){
+        window.location.href = "/" + player_id + "/finish";
         }
     });
 }
@@ -402,6 +487,7 @@ function compare_cards(card_a, card_b) {
   return 0;
 }
 
+// get number of children inside the parent container
 function getNumberOfChildNodesById(id){
     return document.getElementById(id).childElementCount;
 }
@@ -414,18 +500,49 @@ function showExpediteModal(){
     $('#AlertExpediteCardsModal').modal('toggle');
 }
 
+// calculate business value(1st algo for 5-24 days and 2nd for last days)
 function calculateBV(){
     var sum = 0;
-    for (var i = 0; i < card_list.length; i ++){
-        if (card_list[i]["column_number"] == 7){
-            sum += card_list[i]["business_value"];
+    for (var k = 0; k < card_list.length; k ++){
+        if (card_list[k]["column_number"] == 7){
+            sum += card_list[k]["business_value"];
+            console.log(card_list[k]["title"] + " : " + card_list[k]["business_value"]);
+        }
+        if (current_day >= last_day - 1){
+            if (card_list[k]["column_number"] == 6){
+                sum += card_list[k]["business_value"];
+                console.log(card_list[k]["title"] + " : " + card_list[k]["business_value"]);
+            }else if (card_list[k]["business_value"] <= 0 && card_list[k]["column_number"] != 7){
+                if (card_list[k]["is_expedite"]){
+                    if (card_list[k]["column_number"] == 4 || card_list[k]["column_number"] == 5){
+                        if (card_list[k]["business_value"] == 0) sum += LATE_EXPEDITE_CARD_INIT_BV;
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_EXPEDITE_CARD_FACTOR);
+                    }else if (card_list[k]["column_number"] == 2 || card_list[k]["column_number"] == 3){
+                        if (card_list[k]["business_value"] == 0) sum += Math.round(LATE_EXPEDITE_CARD_INIT_BV * LATE_EXPEDITE_CARD_FACTOR);
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_EXPEDITE_CARD_FACTOR * LATE_EXPEDITE_CARD_FACTOR);
+                    }else if (card_list[k]["column_number"] == 0 || card_list[k]["column_number"] == 1){
+                        if (card_list[k]["business_value"] == 0) sum += Math.round(LATE_EXPEDITE_CARD_INIT_BV * LATE_EXPEDITE_CARD_FACTOR * LATE_EXPEDITE_CARD_FACTOR);
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_EXPEDITE_CARD_FACTOR * LATE_EXPEDITE_CARD_FACTOR * LATE_EXPEDITE_CARD_FACTOR);
+                    }
+                }else{
+                    if (card_list[k]["column_number"] == 4 || card_list[k]["column_number"] == 5){
+                        if (card_list[k]["business_value"] == 0) sum += LATE_CARD_INIT_BV;
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_CARD_FACTOR);
+                    }else if (card_list[k]["column_number"] == 2 || card_list[k]["column_number"] == 3){
+                        if (card_list[k]["business_value"] == 0) sum += Math.round(LATE_CARD_INIT_BV * LATE_CARD_FACTOR);
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_CARD_FACTOR * LATE_CARD_FACTOR);
+                    }else if (card_list[k]["column_number"] == 1){
+                        if (card_list[k]["business_value"] == 0) sum += Math.round(LATE_CARD_INIT_BV * LATE_CARD_FACTOR * LATE_CARD_FACTOR);
+                        else sum += Math.round(card_list[k]["business_value"] * LATE_CARD_FACTOR * LATE_CARD_FACTOR * LATE_CARD_FACTOR);
+                    }
+                }
+            }
         }
     }
     BV = sum;
-    document.getElementById('bv_sum_container').innerHTML = "БИЗНЕС ВАЛЬЮ: " + BV;
 }
 
-
+// plot cumulative graph (cumulative amount of task which is done by every department)
 function cumulativeGraph(){
     if (lineChart != null){
         lineChart.destroy();
@@ -447,6 +564,13 @@ function cumulativeGraph(){
     }
     var data = {
         labels: labels,
+        options: {
+            title: {
+                display: true,
+                text: 'Cumulative Flow Diagram',
+                position: 'left'
+            }
+        },
         datasets: [
         {
             label: 'Test tasks',
@@ -477,18 +601,7 @@ function cumulativeGraph(){
             },
             borderColor: 'rgb(255, 0, 0)',
             tension: 0.1
-        }],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
+        }]
     };
     lineChart = new Chart(ctx, {
         type: 'line',
@@ -496,6 +609,7 @@ function cumulativeGraph(){
     });
 }
 
+// plot bar graph (number of task which is done in principle)
 function barGraph(){
     if (barChart != null){
         barChart.destroy();
@@ -516,22 +630,18 @@ function barGraph(){
     }
     var data = {
         labels: labels,
+        options: {
+            title: {
+                display: true,
+                text: 'Lead Time Distribution',
+                position: 'bottom'
+            }
+        },
         datasets: [
         {
             label: 'Completed tasks',
             data: ds,
-        }],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
+        }]
     };
     barChart = new Chart(ctx, {
         type: 'bar',

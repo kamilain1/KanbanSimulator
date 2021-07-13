@@ -71,20 +71,38 @@ $(function() {
     updateCharacterConfiguration();
 });
 
+// new elements don't know about their droppability and dragability, so we need to update it
 function updateCharacterConfiguration(){
     $('.players').draggable({revert: 'invalid',
                     stop: function(event){
                     $(this).css("inset", "");
                     }});
-    $("#header_container").droppable({
+    $("#big_header_container").droppable({
         accept: '.players',
         drop: function(event, ui){
-            $(this).append(ui.draggable[0]);
-            var child = $(this).children().last();
-            child.removeAttr("style");
-            child.css("position", "relative");
+            var parent = $("#header_container");
+            var child = $(ui.draggable);
             var role = characterDistinguishByID(child.attr("id"));
-            moveCharacter(role, -1);
+
+            if (players_list[role] != -1){
+                parent.append(child);
+                child.removeAttr("style");
+                child.css("position", "relative");
+                moveCharacter(role, -1);
+            }else{
+                return false;
+            }
+        }
+    });
+
+    $(".players").dblclick(function(){
+        var elem = $(this);
+        var cur_role = characterDistinguishByID(elem.attr("id"));
+        if (players_list[cur_role] != -1){
+            $(this).remove();
+            $("#header_container").append(elem);
+            moveCharacter(cur_role, -1);
+            updateCharacterConfiguration();
         }
     });
 }
@@ -92,7 +110,7 @@ function updateCharacterConfiguration(){
 // functions which tells to server that the given character changed its position
 function moveCharacter(role, card_id){
     console.log("Character#" + role + " was moved on card#" + card_id);
-    players_list[role] == card_id;
+    players_list[role] = card_id;
     data = {"team_id": team_id,
             "role": role,
             "card_id": card_id};

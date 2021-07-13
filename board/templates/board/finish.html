@@ -5,11 +5,19 @@
     <title>End Game</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA930CT/d9Ak/3fQJP930CTwAAAADykUv/8pFL//KRS//ykUv/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAA8pFL//KRS//ykUv/8pFL/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAPKRS//ykUv/8pFL//KRS/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFlZWP9ZWVj/WVlY/1lZWP8AAAAA930CT/d9Ak/3fQJP930CTwAAAABnqw7/Z6sO/2erDv9nqw7/AAAAAAAAAABZWVj/WVlY/1lZWP9ZWVj/AAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAAZ6sO/2erDv9nqw7/Z6sO/wAAAAAAAAAAWVlY/1lZWP9ZWVj/WVlY/wAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAGerDv9nqw7/Z6sO/2erDv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADbRIP/20SD/9tEg//bRIP/AAAAAGerDv9nqw7/Z6sO/2erDv8AAAAA930CT/d9Ak/3fQJP930CTwAAAAAAAAAA20SD/9tEg//bRIP/20SD/wAAAABnqw7/Z6sO/2erDv9nqw7/AAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAAAAAAANtEg//bRIP/20SD/9tEg/8AAAAAZ6sO/2erDv9nqw7/Z6sO/wAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA/D8AAPw/AAD8PwAA//8AAIfhAACH4QAAh+EAAP//AACEPwAAhD8AAIQ/AAD//wAA//8AAA==" rel="icon" type="image/x-icon"/>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA930CT/d9Ak/3fQJP930CTwAAAADykUv/8pFL//KRS//ykUv/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAA8pFL//KRS//ykUv/8pFL/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAPKRS//ykUv/8pFL//KRS/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFlZWP9ZWVj/WVlY/1lZWP8AAAAA930CT/d9Ak/3fQJP930CTwAAAABnqw7/Z6sO/2erDv9nqw7/AAAAAAAAAABZWVj/WVlY/1lZWP9ZWVj/AAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAAZ6sO/2erDv9nqw7/Z6sO/wAAAAAAAAAAWVlY/1lZWP9ZWVj/WVlY/wAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAGerDv9nqw7/Z6sO/2erDv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADbRIP/20SD/9tEg//bRIP/AAAAAGerDv9nqw7/Z6sO/2erDv8AAAAA930CT/d9Ak/3fQJP930CTwAAAAAAAAAA20SD/9tEg//bRIP/20SD/wAAAABnqw7/Z6sO/2erDv9nqw7/AAAAAPd9Ak/3fQJP930CT/d9Ak8AAAAAAAAAANtEg//bRIP/20SD/9tEg/8AAAAAZ6sO/2erDv9nqw7/Z6sO/wAAAAD3fQJP930CT/d9Ak/3fQJPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAD//wAA/D8AAPw/AAD8PwAA//8AAIfhAACH4QAAh+EAAP//AACEPwAAhD8AAIQ/AAD//wAA//8AAA=="
+          rel="icon" type="image/x-icon"/>
     {% block styles %}
         {% load static %}
         <link rel="stylesheet" href="{% static 'board/css/style.css' %}">
     {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"
+            type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js"></script>
+
+    <script src="{% static 'board/js/finish_room.js' %}"></script>
 
 </head>
 <body class="bg-light">
@@ -30,33 +38,156 @@
 
         <div class="modal fade" id="RulesModal" tabindex="-1" aria-labelledby="RulesModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
+                <div class="modal-content border-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="RulesModalLabel">Правила игры</h5>
                     </div>
                     <div class="modal-body">
-                        <p>Каждая карточка на доске представляет собой задачу, которую должна
-                            выполнить ваша команда. Все новые задачи появляются в колонке «ОЧЕРЕДЬ». Чтобы выполнить
-                            задачу, вы должны доставить её в колонку «СДЕЛАНО», пройдя при этом промежуточные
-                            этапы - «АНАЛИЗ», «РАЗРАБОТКА» и «ТЕСТИРОВАНИЕ».</p>
-                        <div class="card border-success">
-                            <img src="{% static 'board/images/rule1.png' %}" alt="first-image">
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>В столбце <span class="text-uppercase fw-bold">Очередь</span> находятся карточки,
+                                    представляющие собой какую-либо часть функционала
+                                    будущего продукта. Чтобы выбрать карточку для работы, перенесите ее на этап <span
+                                            class="text-uppercase fw-bold">Анализа</span>. Для
+                                    ускорения игрового процесса игра начинается с середины первой недели, и часть
+                                    заданий
+                                    уже
+                                    частично выполнена, а соответствующие им карточки уже находятся в столбцах <span
+                                            class="text-uppercase fw-bold">Разработка</span> и
+                                    <span class="text-uppercase fw-bold">Тестирование</span>.</p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule1.png' %}" alt="first-image">
+                            </div>
                         </div>
-                        <p>Ваша команда может выбирать карточки из колонки «ОЧЕРЕДЬ» и ставить
-                            игроков на эти карточки. Размещая игроков на карточки, нужно учитывать, что смена на
-                            другую работу будет стоить 1 очко. </p>
-                        <div class="card border-success">
-                            <img src="{% static 'board/images/rule1.png' %}" alt="first-image">
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>
+                                    После того, как карточка оказывается в колонке <span class="text-uppercase fw-bold">Актив</span>
+                                    одного из столбцов, для продолжения работы над ней требуется приложить <span
+                                        class="fw-bold">effort*</span>, перенося на нее игроков соответствующего
+                                    цвета <span
+                                        class="fw-light">(для анализа - красные, для разработки - синие, для
+                                    тестирования - зеленые)</span>.
+                                    Больше игроков на одной карточке - быстрее выполнение задания. В столбец <span
+                                        class="text-uppercase fw-bold">Разработка</span>
+                                    карточка может попасть только если у нее заполнен effort <span
+                                        class="fw-bold">анализа</span>, в столбец
+                                    <span class="text-uppercase fw-bold">Тестирование</span> только если у нее заполнен
+                                    effort <span
+                                        class="fw-bold">разработки</span>.
+                                </p>
+                                <p>
+                                    Для того, чтобы игроки начали выполнять свою
+                                    работу, нужно нажать кнопку <span class="text-uppercase fw-bold">Начать день</span>.
+                                </p>
+                                <p>
+                                    <span class="fw-bold">*effort</span> - усилие (англ.); в Канбане - объем работы,
+                                    который нужно выполнить, чтобы
+                                    карточка считалась завершенной
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule2.png' %}" alt="first-image">
+                            </div>
+                            <div class="pt-1">
+                                Игроков можно как перестаскивать на соответсвующие карточки, так и возвращать
+                                обратно <span
+                                    class="fw-light fst-italic">двойным кликом</span>. Также, начиная <span
+                                    class="fw-light fst-italic">десятого дня</span>, игроки могут выполнять работу
+                                на карточках других отделов, но за это у них будет сниматься 1 очко <span
+                                    class="fw-bold">effort'а</span>
+                            </div>
                         </div>
-                        <p>Нажимая кнопку "НАЧАТЬ ДЕНЬ", размещенные игроки начинают выполнять работу.</p>
-                        <div class="card border-success">
-                            <img src="{% static 'board/images/rule1.png' %}" alt="first-image">
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>
+                                    У каждой карточки есть параметр под названием <span
+                                        class="fw-bold">business value</span>, определяющий
+                                    <span
+                                            class="fw-light fst-italic">“ценность”</span> задания. Накопленная сумма
+                                    business value напрямую влияет на место
+                                    команды в таблице лидеров после конца игры. Очень важно стараться выполнять задания
+                                    <span
+                                            class="fw-light fst-italic">вовремя</span>, так как с истечением времени
+                                    business value невыполненных заданий будет
+                                    падать.
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule3.png' %}" alt="first-image">
+                            </div>
                         </div>
-                        <p>Когда карточка будет выполнена в колонке "АНАЛИЗ", она переместиться в подколонку "Финиш".
-                            Дальше вы ее можете переместить в следующую колонку. </p>
-                        <div class="card border-success">
-                            <img src="{% static 'board/images/rule1.png' %}" alt="first-image">
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>
+                                    На <span
+                                        class="fw-light fst-italic">десятый день</span> игры в столбец <span
+                                        class="text-uppercase fw-bold">Очередь</span>
+                                    добавится новый набор карточек. Это будет
+                                    сопровождаться <span
+                                        class="fw-light">уведомлением</span> об их появлении. Также, в начале каждого
+                                    дня есть
+                                    вероятность появления <span class="fw-bold">срочных заданий</span>, карточки которых
+                                    помечены желтым цветом, как
+                                    и уведомление, сопровождающее их. Эти задания ценятся выше обычных, но их business
+                                    value со временем падает намного быстрее. <span
+                                        class="fst-italic">Постарайтесь выполнить их как можно скорее!</span>
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule4.png' %}" alt="first-image">
+                            </div>
                         </div>
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>
+                                    Во время игры можно увидеть свою <span class="fw-bold">статистику</span>, открыв
+                                    окно с двумя графиками. На первом графике показано <span class="fw-light">сколько задач</span>
+                                    было сделано каждым отделом
+                                    до конкретного дня. Также пологие участки на этом графике будут показывать - в
+                                    какие дни происходит <span class="fw-light">задержка в каждом отделе</span>. Второй
+                                    график показывает количество <span class="fw-light">задач</span> выполненных в <span
+                                        class="fw-light">конкретный день</span>.
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule5.png' %}" alt="first-image">
+                            </div>
+                        </div>
+
+                        <div class="pt-1 pb-3 border-bottom">
+                            <div>
+                                <p>
+                                    Также в процессе игры всегда можно изменить <span class="fw-bold">WIP limits</span>,
+                                    нажав соответсвующую кнопку.
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule6.png' %}" alt="first-image">
+                            </div>
+                        </div>
+
+                        <div class="pt-1 pb-1">
+                            <div>
+                                <p>
+                                    Игра продолжается до <span class="fw-bold">26ого дня</span>!
+                                </p>
+                                <p>
+                                    В конце игры можно будет посмотреть <span class="fw-bold">таблицу лидеров</span>, а
+                                    также <span class="fw-bold">статистику других команд</span>.
+                                </p>
+                            </div>
+                            <div class="card border-success">
+                                <img class="" src="{% static 'board/images/rule7.png' %}" alt="first-image">
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
@@ -70,54 +201,22 @@
 
 <div class="container pt-5 overflow-auto" id="fin">
     <div class="row">
-        <div class="col-7">
-            <ul class="nav nav-tabs">
-
-            {#    {% for team in team_list %}#}
-
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-info nav-link active text-dark">Команда 1</button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-info nav-link text-dark">Команда 2</button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-info nav-link text-dark">Команда 3</button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-outline-info nav-link text-dark">Команда 4</button>
-                </li>
-
-            {#    {% endfor %}#}
-            </ul>
-
-{#            <div class="row">#}
-{#                <div class="col">#}
-{#                    <div class="border-success">#}
-{#                        <canvas id="firstChart"></canvas>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div class="col">#}
-{#                    <div class="border-success">#}
-{#                        <canvas id="secondChart"></canvas>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
+        <div class="col-7 text-center fw-bold">
+            <ul class="nav nav-tabs" id="team_tabs"></ul>
 
             <div class="row p-2">
-                <div id="plot">
+                <div class="mx-auto" id="plot">
                     <canvas id="firstChart"></canvas>
-{#                    <img src="{% static 'board/images/main-rule.png' %}" alt="first-image">#}
                 </div>
+                <p>Cumulative flow diagram</p>
             </div>
 
             <div class="row p-2">
-                <div id="plot">
+                <div class="mx-auto" id="plot">
                     <canvas id="secondChart"></canvas>
-{#                    <img src="{% static 'board/images/main-rule.png' %}" alt="first-image">#}
                 </div>
+                <p>Lead Time Distribution</p>
             </div>
-
 
 
         </div>
@@ -125,21 +224,20 @@
         <div class="col-5">
             <table class="table table-hover">
                 <thead class="table-success">
-                    <tr class="">
-                        <th scope="col">#</th>
-                        <th scope="col">Команда</th>
-                        <th scope="col">Участники команды</th>
-                        <th scope="col">Бизнес валью</th>
-                    </tr>
+                <tr class="">
+                    <th scope="col">#</th>
+                    <th scope="col">Команда</th>
+                    <th scope="col">Участники команды</th>
+                    <th scope="col">Бизнес валью</th>
+                </tr>
                 </thead>
-                <tbody>
+                <tbody id="team_rating">
 
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
 
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
