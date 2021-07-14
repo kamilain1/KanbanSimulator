@@ -1,6 +1,5 @@
 # KanbanSimulator
-First of all:
-1) Make sure you have already installed Django, otherwise
+First of all make sure you have already installed Django, otherwise
 ```
 pip install django
 ```
